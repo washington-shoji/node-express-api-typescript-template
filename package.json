@@ -1,0 +1,7 @@
+{
+	"name": "node-express-api-typescript-template",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "JSD",
+	"license": "MIT"
+}
