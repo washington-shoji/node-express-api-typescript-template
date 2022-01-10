@@ -5,6 +5,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 
+import ErrorMiddleware from './middleware/error/error.middleware';
+import { threadId } from 'worker_threads';
+
 class App {
     public express: Application;
     public port: number;
@@ -14,6 +17,7 @@ class App {
         this.port = port;
 
         this.initialiseMiddleware();
+        this.initialiseErrorHandling();
         this.initialiseDatabaseConnection();
     }
 
@@ -24,6 +28,10 @@ class App {
         this.express.use(express.json());
         this.express.use(express.urlencoded({ extended: false }));
         this.express.use(compression());
+    }
+
+    private initialiseErrorHandling(): void {
+        this.express.use(ErrorMiddleware);
     }
 
     private async initialiseDatabaseConnection(): Promise<void> {
