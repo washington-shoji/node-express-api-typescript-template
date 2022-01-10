@@ -6,7 +6,6 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 
 import ErrorMiddleware from './middleware/error/error.middleware';
-import { threadId } from 'worker_threads';
 
 class App {
     public express: Application;
