@@ -3,6 +3,7 @@ import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import mongoose from 'mongoose';
 
 class App {
     public express: Application;
@@ -13,6 +14,7 @@ class App {
         this.port = port;
 
         this.initialiseMiddleware();
+        this.initialiseDatabaseConnection();
     }
 
     private initialiseMiddleware(): void {
@@ -22,6 +24,18 @@ class App {
         this.express.use(express.json());
         this.express.use(express.urlencoded({ extended: false }));
         this.express.use(compression());
+    }
+
+    private async initialiseDatabaseConnection(): Promise<void> {
+        const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
+        try {
+            const database = await mongoose.connect(
+                `mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`
+            );
+            console.log(`Mongodb ${database.connection.name} Connected`);
+        } catch (error) {
+            console.log(`Could not connect to database due to Error: ${error}`);
+        }
     }
 
     public listen(): void {
