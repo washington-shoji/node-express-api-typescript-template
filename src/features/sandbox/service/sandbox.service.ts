@@ -1,8 +1,9 @@
-import SandboxModel from '../model/sandbox.model';
-import { ISandbox } from './../interface/sandbox.interface';
+import { ISandboxDocument } from '../interface/sandbox.interface';
+import sandboxModel from '../model/sandbox.model';
+//import { ISandbox } from './../interface/sandbox.interface';
 
 class SandboxService {
-    private sandbox;
+    private sandbox = sandboxModel;
 
     constructor(sandbox: any) {
         this.sandbox = sandbox;
@@ -11,9 +12,11 @@ class SandboxService {
     /**
      * Create a sandbox entry
      */
-    public async createSandboxEntry(sandboxData: ISandbox): Promise<ISandbox> {
+    public async createSandboxEntry(
+        sandboxData: ISandboxDocument
+    ): Promise<ISandboxDocument> {
         try {
-            const result: ISandbox = await this.sandbox.create(sandboxData);
+            const result = await this.sandbox.create(sandboxData);
             return result;
         } catch (error) {
             throw new Error('Unable to create a sandbox entry');
@@ -23,4 +26,4 @@ class SandboxService {
 
 export default SandboxService;
 
-export const sandboxService = new SandboxService(SandboxModel);
+export const sandboxService = new SandboxService(sandboxModel);

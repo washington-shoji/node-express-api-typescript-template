@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { ISandbox } from '../interface/sandbox.interface';
+import { ISandboxDocument } from '../interface/sandbox.interface';
 
 const SandboxSchema = new Schema(
     {
@@ -12,4 +12,4 @@ const SandboxSchema = new Schema(
     { timestamps: true }
 );
 
-export default model<ISandbox>('Sandbox', SandboxSchema);
+export default model<ISandboxDocument>('Sandbox', SandboxSchema);
