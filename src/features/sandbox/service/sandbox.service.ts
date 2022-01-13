@@ -1,11 +1,12 @@
 import { Request } from 'express';
+import { Model } from 'mongoose';
 import { ISandboxDocument } from '../interface/sandbox.interface';
 import sandboxModel from '../model/sandbox.model';
 
 class SandboxService {
-    private sandbox = sandboxModel;
+    private sandbox: Model<ISandboxDocument>;
 
-    constructor(sandbox: any) {
+    constructor(sandbox: Model<ISandboxDocument>) {
         this.sandbox = sandbox;
     }
 
