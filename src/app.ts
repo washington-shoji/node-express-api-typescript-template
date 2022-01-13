@@ -6,8 +6,6 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 
 import ErrorMiddleware from './middleware/error/error.middleware';
-import Controller from './interface/controller.interface';
-import userController from './features/sandbox/controller/sandboxController.controller';
 
 class App {
     public express: Application;
@@ -25,17 +23,6 @@ class App {
         this.initialiseRoutes(routes);
     }
 
-    // constructor(port: number, controllers: Controller[]) {
-    //     this.express = express();
-    //     this.port = port;
-
-    //     this.initialiseMiddleware();
-    //     this.initialiseErrorHandling();
-    //     this.initialiseDatabaseConnection();
-
-    //     this.initialiseControllers(controllers);
-    // }
-
     private initialiseMiddleware(): void {
         this.express.use(helmet());
         this.express.use(cors());
@@ -46,8 +33,8 @@ class App {
     }
 
     private initialiseRoutes(routes: express.Router[]) {
-        routes.forEach((r) => {
-            this.express.use(`/api`, r);
+        routes.forEach((route) => {
+            this.express.use(`/api`, route);
         });
     }
 
