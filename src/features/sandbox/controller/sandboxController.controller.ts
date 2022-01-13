@@ -1,44 +1,16 @@
 import HttpException from '../../../utils/exceptions/http.exception';
-import { Request, Response, NextFunction, Router } from 'express';
-import SandboxService, { sandboxService } from '../service/sandbox.service';
+import { Request, Response, NextFunction } from 'express';
+import { sandboxService } from '../service/sandbox.service';
+import {
+    ISandboxDocument,
+    ISandboxService,
+} from '../interface/sandbox.interface';
+import { BaseController } from '../abstract/baseController.abstract';
 
-// export class SandboxCreateController extends BaseController<
-//     ISandbox,
-//     ISandbox,
-//     ISandbox
-// > {
-//     private readonly sandboxService: SandboxService;
+export class SandboxController {
+    private readonly sandboxService: ISandboxService;
 
-//     constructor(sandboxService: SandboxService) {
-//         super();
-//         this.sandboxService = sandboxService;
-//     }
-//     protected parseQueryParams(parseArgs: ISandbox): ISandbox {
-//         return parseArgs;
-//     }
-//     protected processData(parsedData: ISandbox): Promise<ISandbox> {
-//         const newParsedData = {
-//             title: parsedData.title,
-//             body: parsedData.body,
-//         };
-//         return this.sandboxService.createSandboxEntry(newParsedData);
-//     }
-//     protected successCode(): number {
-//         return 201;
-//     }
-//     protected successMessage(): string {
-//         throw new Error('Failed to create a sandbox entry');
-//     }
-// }
-
-// export const sanboxCreateController = new SandboxCreateController(
-//     new SandboxService(sandboxModel)
-// );
-
-export class UserController {
-    private readonly sandboxService: SandboxService;
-
-    constructor(sandboxService: SandboxService) {
+    constructor(sandboxService: ISandboxService) {
         this.sandboxService = sandboxService;
     }
     public async create(
@@ -129,5 +101,39 @@ export class UserController {
     }
 }
 
-const userController = new UserController(sandboxService);
-export default userController;
+const sandboxController = new SandboxController(sandboxService);
+export default sandboxController;
+
+export class SandboxController2 extends BaseController<
+    ISandboxService,
+    ISandboxDocument
+> {
+    constructor(sandboxService: ISandboxService) {
+        super(sandboxService);
+    }
+
+    protected parseQueryParams(parseArgs: Request): ISandboxDocument {
+        return parseArgs.body;
+    }
+
+    protected async processData(
+        parsedData: ISandboxDocument
+    ): Promise<ISandboxDocument> {
+        const result = await sandboxService.createSandboxEntry(parsedData);
+        return result;
+    }
+
+    protected successCode(): number {
+        return 201;
+    }
+
+    protected successMessage(): string {
+        return 'Sandbox entry successfully created';
+    }
+
+    protected Error(error: any, next: NextFunction): void {
+        next(new HttpException(500, error.message));
+    }
+}
+
+export const sandboxController2 = new SandboxController2(sandboxService);
