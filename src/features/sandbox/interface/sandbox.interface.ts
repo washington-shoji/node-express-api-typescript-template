@@ -2,6 +2,7 @@ import { Document } from 'mongoose';
 import { Request } from 'express';
 
 export interface ISandboxDocument extends Document {
+    id?: string;
     title: string;
     body: string;
 }
