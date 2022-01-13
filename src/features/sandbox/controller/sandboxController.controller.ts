@@ -103,37 +103,3 @@ export class SandboxController {
 
 const sandboxController = new SandboxController(sandboxService);
 export default sandboxController;
-
-export class SandboxController2 extends BaseController<
-    ISandboxService,
-    ISandboxDocument
-> {
-    constructor(sandboxService: ISandboxService) {
-        super(sandboxService);
-    }
-
-    protected parseQueryParams(parseArgs: Request): ISandboxDocument {
-        return parseArgs.body;
-    }
-
-    protected async processData(
-        parsedData: ISandboxDocument
-    ): Promise<ISandboxDocument> {
-        const result = await sandboxService.createSandboxEntry(parsedData);
-        return result;
-    }
-
-    protected successCode(): number {
-        return 201;
-    }
-
-    protected successMessage(): string {
-        return 'Sandbox entry successfully created';
-    }
-
-    protected Error(error: any, next: NextFunction): void {
-        next(new HttpException(500, error.message));
-    }
-}
-
-export const sandboxController2 = new SandboxController2(sandboxService);
