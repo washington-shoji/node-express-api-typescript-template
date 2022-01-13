@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export abstract class BaseController<T, U> {
+export abstract class BaseController<T, U, W> {
     private readonly service: T;
 
     constructor(service: T) {
@@ -11,7 +11,7 @@ export abstract class BaseController<T, U> {
     protected abstract successMessage(): string;
     protected abstract parseQueryParams(parseArgs: Request): U;
 
-    protected abstract processData(parsedData: U): Promise<U>;
+    protected abstract processData(parsedData: U): Promise<W>;
     protected Error(error: any, next: NextFunction): void {
         throw new Error();
     }
@@ -28,7 +28,7 @@ export abstract class BaseController<T, U> {
                 result,
             });
         } catch (error: any) {
-            this.Error(error, next);
+            next(this.Error(error, next));
         }
     }
 }
