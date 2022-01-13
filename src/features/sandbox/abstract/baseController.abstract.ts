@@ -1,32 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
 
-export abstract class BaseController<T, K, I> {
-    protected abstract parseQueryParams(parseArgs: T): K;
-    protected abstract processData(parsedData: K): Promise<I>;
-    protected abstract successCode(): number;
-    protected abstract successMessage(): string;
-    protected Error(error: any) {
-        throw new Error(error);
+export abstract class BaseController<T, U> {
+    private readonly service: T;
+
+    constructor(service: T) {
+        this.service = service;
     }
 
-    protected constructor() {}
+    protected abstract successCode(): number;
+    protected abstract successMessage(): string;
+    protected abstract parseQueryParams(parseArgs: Request): U;
+
+    protected abstract processData(parsedData: U): Promise<U>;
+    protected Error(error: any, next: NextFunction): void {
+        throw new Error();
+    }
 
     public async handleController(
         req: Request,
         res: Response,
         next: NextFunction
-    ) {
-        const parsedData: K = this.parseQueryParams(req.body);
-
+    ): Promise<void> {
         try {
-            const processedData: I = await this.processData(parsedData);
-
+            const result = await this.processData(this.parseQueryParams(req));
             res.status(this.successCode()).json({
                 message: this.successMessage(),
-                result: processedData,
+                result,
             });
         } catch (error: any) {
-            this.Error(error);
+            this.Error(error, next);
         }
     }
 }
