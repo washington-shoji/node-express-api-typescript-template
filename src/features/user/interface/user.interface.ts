@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import { Request } from 'express';
 
-export default interface User extends Document {
+export interface IUserDocument extends Document {
     email: string;
     name: string;
     password: string;
@@ -11,6 +11,6 @@ export default interface User extends Document {
 }
 
 export interface IUserService {
-    registerUser(req: Request): Promise<User>;
-    loginUser(req: Request): Promise<User>;
+    registerUser(req: Request): Promise<IUserDocument>;
+    loginUser(req: Request): Promise<IUserDocument>;
 }

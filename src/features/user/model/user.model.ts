@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { User } from './../interface/user.interface';
+import { IUserDocument } from './../interface/user.interface';
 
 const UserSchema = new Schema(
     {
@@ -25,7 +25,7 @@ const UserSchema = new Schema(
     { timestamps: true }
 );
 
-UserSchema.pre<User>('save', async function (next) {
+UserSchema.pre<IUserDocument>('save', async function (next) {
     if (!this.isModified('password')) {
         return next();
     }
@@ -43,4 +43,4 @@ UserSchema.methods.isValidPassword = async function (
     return await bcrypt.compare(password, this.password);
 };
 
-export default model<User>('User', UserSchema);
+export default model<IUserDocument>('User', UserSchema);
