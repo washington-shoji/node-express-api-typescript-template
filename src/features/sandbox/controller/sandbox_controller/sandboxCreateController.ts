@@ -23,7 +23,7 @@ export class SandboxCreateController extends BaseController<
     protected async processData(
         parsedData: Request
     ): Promise<ISandboxDocument> {
-        const result = await sandboxService.createSandboxEntry2(parsedData);
+        const result = await sandboxService.createSandboxEntry(parsedData);
         return result;
     }
 

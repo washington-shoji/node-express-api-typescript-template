@@ -27,7 +27,7 @@ export class SandboxGetAllController extends BaseController<
     protected async processData(
         parsedData: Request
     ): Promise<ISandboxDocument[]> {
-        const result = await sandboxService.getSandboxEntries2(parsedData);
+        const result = await sandboxService.getSandboxEntries(parsedData);
 
         return result;
     }
