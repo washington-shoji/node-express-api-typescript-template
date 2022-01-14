@@ -3,18 +3,7 @@ import { Model } from 'mongoose';
 import { ISandboxDocument } from '../interface/sandbox.interface';
 import sandboxModel from '../model/sandbox.model';
 
-class SandboxService {
-    static createSandboxEntry2(
-        parsedData: Request<
-            import('express-serve-static-core').ParamsDictionary,
-            any,
-            any,
-            import('qs').ParsedQs,
-            Record<string, any>
-        >
-    ) {
-        throw new Error('Method not implemented.');
-    }
+export class SandboxService {
     private sandbox: Model<ISandboxDocument>;
 
     constructor(sandbox: Model<ISandboxDocument>) {
@@ -24,18 +13,8 @@ class SandboxService {
     /**
      * Create a sandbox entry
      */
-    public async createSandboxEntry(
-        sandboxData: ISandboxDocument
-    ): Promise<ISandboxDocument> {
-        try {
-            const result = await this.sandbox.create(sandboxData);
-            return result;
-        } catch (error) {
-            throw new Error('Unable to create a sandbox entry');
-        }
-    }
 
-    public async createSandboxEntry2(req: Request): Promise<ISandboxDocument> {
+    public async createSandboxEntry(req: Request): Promise<ISandboxDocument> {
         try {
             const data = req.body;
             const result = await this.sandbox.create(data);
@@ -71,19 +50,7 @@ class SandboxService {
      * Get all sandbox entries
      */
 
-    public async getSandboxEntries(): Promise<ISandboxDocument[]> {
-        try {
-            const result = await this.sandbox.find({});
-            if (!result) {
-                throw new Error(`Unable to fetch sandbox entries`);
-            }
-            return result;
-        } catch (error) {
-            throw new Error('Unable to get sandbox entries');
-        }
-    }
-
-    public async getSandboxEntries2(req: Request): Promise<ISandboxDocument[]> {
+    public async getSandboxEntries(req: Request): Promise<ISandboxDocument[]> {
         try {
             const result = await this.sandbox.find({});
             if (!result) {
@@ -131,7 +98,5 @@ class SandboxService {
         }
     }
 }
-
-export default SandboxService;
 
 export const sandboxService = new SandboxService(sandboxModel);
