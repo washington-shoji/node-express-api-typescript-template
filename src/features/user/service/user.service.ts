@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { Model } from 'mongoose';
-import { createToken } from 'utils/token/token';
+import { createToken } from '../../../utils/token/token';
 import { IUserDocument } from '../interface/user.interface';
 import userModel from '../model/user.model';
 
@@ -14,17 +14,24 @@ class UserService {
     /**
      * Register a new user
      */
-    public async registerUser(req: Request): Promise<string | Error> {
+    public async registerUser(
+        req: Request
+    ): Promise<string | Error | IUserDocument> {
         try {
-            const data = req.body;
+            const { name, email, password, role } = req.body;
             const user = await this.user.create({
-                data,
+                name,
+                email,
+                password,
+                role,
             });
 
             const accessToken = createToken(user);
 
             return accessToken;
         } catch (error: any) {
+            console.log('REGISTER ERROR', error.message);
+
             throw new Error(error.message);
         }
     }
@@ -32,7 +39,9 @@ class UserService {
     /**
      * Attempt to login a user
      */
-    public async loginUser(req: Request): Promise<string | Error> {
+    public async loginUser(
+        req: Request
+    ): Promise<string | Error | IUserDocument> {
         try {
             const { email, password } = req.body;
             const user = await this.user.findOne({ email });

@@ -6,11 +6,10 @@ export interface IUserDocument extends Document {
     name: string;
     password: string;
     role: string;
-
     isValidPassword(password: string): Promise<Error | boolean>;
 }
 
 export interface IUserService {
-    registerUser(req: Request): Promise<IUserDocument>;
-    loginUser(req: Request): Promise<IUserDocument>;
+    registerUser(req: Request): Promise<IUserDocument | string | Error>;
+    loginUser(req: Request): Promise<IUserDocument | string | Error>;
 }
