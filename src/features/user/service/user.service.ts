@@ -14,9 +14,7 @@ class UserService {
     /**
      * Register a new user
      */
-    public async registerUser(
-        req: Request
-    ): Promise<string | Error | IUserDocument> {
+    public async registerUser(req: Request): Promise<string | IUserDocument> {
         try {
             const { name, email, password, role } = req.body;
             const user = await this.user.create({
@@ -39,9 +37,7 @@ class UserService {
     /**
      * Attempt to login a user
      */
-    public async loginUser(
-        req: Request
-    ): Promise<string | Error | IUserDocument> {
+    public async loginUser(req: Request): Promise<string | IUserDocument> {
         try {
             const { email, password } = req.body;
             const user = await this.user.findOne({ email });

@@ -10,6 +10,6 @@ export interface IUserDocument extends Document {
 }
 
 export interface IUserService {
-    registerUser(req: Request): Promise<IUserDocument | string | Error>;
-    loginUser(req: Request): Promise<IUserDocument | string | Error>;
+    registerUser(req: Request): Promise<IUserDocument | string>;
+    loginUser(req: Request): Promise<IUserDocument | string>;
 }
