@@ -1,44 +1,35 @@
 import { Request } from 'express';
 import { Model } from 'mongoose';
-import { ISandboxDocument } from '../interface/sandbox.interface';
-import sandboxModel from '../model/sandbox.model';
+import { ISandboxDocument, Sandbox } from '../interface/sandbox.interface';
+import { SandboxModel } from '../model/sandbox.model';
 
 export class SandboxService {
-    private sandbox: Model<ISandboxDocument>;
+    private sandbox: Model<Sandbox>;
 
-    constructor(sandbox: Model<ISandboxDocument>) {
-        this.sandbox = sandbox;
+    constructor() {
+        this.sandbox = SandboxModel;
     }
 
-    /**
-     * Create a sandbox entry
-     */
-
-    public async createSandboxEntry(req: Request): Promise<ISandboxDocument> {
+    public async createSandboxEntry(sandbox: Sandbox): Promise<Sandbox> {
         try {
-            const data = req.body;
-            const result = await this.sandbox.create(data);
+            const result: Sandbox = await this.sandbox.create(sandbox);
             return result;
         } catch (error) {
             throw new Error('Unable to create a sandbox entry');
         }
     }
 
-    /**
-     * Update a sandbox entry by id
-     */
-    public async updateSandboxEntry(req: Request): Promise<ISandboxDocument> {
+    public async updateSandboxEntry(sandbox: Sandbox): Promise<Sandbox> {
         try {
-            const id = req.params.id;
-            const { title, body } = req.body;
-
             const result = await this.sandbox.findByIdAndUpdate(
-                id,
-                { title, body },
-                { returnDocument: 'after' }
+                sandbox._id,
+                sandbox,
+                {
+                    returnDocument: 'after',
+                }
             );
             if (!result) {
-                throw new Error(`Unable to find sandbox with id: ${id}`);
+                throw new Error(`Unable to find sandbox entry`);
             }
             return result;
         } catch (error) {
@@ -46,11 +37,7 @@ export class SandboxService {
         }
     }
 
-    /**
-     * Get all sandbox entries
-     */
-
-    public async getSandboxEntries(req: Request): Promise<ISandboxDocument[]> {
+    public async getSandboxEntries(): Promise<Sandbox[]> {
         try {
             const result = await this.sandbox.find({});
             if (!result) {
@@ -62,18 +49,13 @@ export class SandboxService {
         }
     }
 
-    /**
-     * Get a sandbox entry by id
-     */
-
-    public async getSandboxEntriesById(
-        req: Request
-    ): Promise<ISandboxDocument> {
+    public async getSandboxEntriesById(sandboxId: string): Promise<Sandbox> {
         try {
-            const id = req.params.id;
-            const result = await this.sandbox.findById(id);
+            const result: Sandbox | null = await this.sandbox.findById(
+                sandboxId
+            );
             if (!result) {
-                throw new Error(`Unable to fetch sandbox entry ${id}`);
+                throw new Error(`Unable to fetch sandbox entry`);
             }
             return result;
         } catch (error) {
@@ -81,22 +63,16 @@ export class SandboxService {
         }
     }
 
-    /**
-     * Delete a sandbox entry by id
-     */
-    public async deleteSandboxEntry(req: Request): Promise<ISandboxDocument> {
+    public async deleteSandboxEntry(id: string): Promise<void> {
         try {
-            const id = req.params.id;
-
             const result = await this.sandbox.findByIdAndDelete(id);
             if (!result) {
-                throw new Error(`Unable to find sandbox with id: ${id}`);
+                throw new Error(`Unable to find sandbox entry`);
             }
-            return result;
         } catch (error) {
             throw new Error('Unable to delete a sandbox entry');
         }
     }
 }
 
-export const sandboxService = new SandboxService(sandboxModel);
+export const sandboxService = new SandboxService();
