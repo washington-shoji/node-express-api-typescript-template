@@ -1,45 +1,26 @@
-import { Request, NextFunction } from 'express';
-import HttpException from '../../../../utils/exceptions/http.exception';
-import { BaseController } from '../../abstract/baseController.abstract';
-import {
-    ISandboxDocument,
-    ISandboxService,
-} from '../../interface/sandbox.interface';
-import { sandboxService } from '../../service/sandbox.service';
+import { NewBasePostController } from '../../abstract/baseController.abstract';
+import { Sandbox } from '../../interface/sandbox.interface';
+import { SandboxService, sandboxService } from '../../service/sandbox.service';
 
-export class SandboxCreateController extends BaseController<
-    ISandboxService,
-    Request,
-    ISandboxDocument
-> {
-    constructor(sandboxService: ISandboxService) {
-        super(sandboxService);
+export class NewSandboxCreateController extends NewBasePostController<Sandbox> {
+    private readonly sandBoxService: SandboxService;
+    constructor(sandboxService: SandboxService) {
+        super();
+
+        this.sandBoxService = sandboxService;
     }
 
-    protected parseQueryParams(parseArgs: Request): Request {
-        return parseArgs;
+    parseRequestBody(): Sandbox {
+        const body: Sandbox = this.request!.body as Sandbox;
+        return body;
     }
 
-    protected async processData(
-        parsedData: Request
-    ): Promise<ISandboxDocument> {
-        const result = await sandboxService.createSandboxEntry(parsedData);
-        return result;
-    }
-
-    protected successCode(): number {
-        return 201;
-    }
-
-    protected successMessage(): string {
-        return 'Sandbox entry successfully created';
-    }
-
-    protected Error(error: any, next: NextFunction): void {
-        next(new HttpException(500, error.message));
+    async processData(): Promise<Sandbox> {
+        return await this.sandBoxService.createSandboxEntry(
+            this.parseRequestBody()
+        );
     }
 }
-
-export const sandboxCreateController = new SandboxCreateController(
+export const newSandboxCreateController = new NewSandboxCreateController(
     sandboxService
-);
+).controller;
