@@ -1,41 +1,37 @@
-import { Request, NextFunction } from 'express';
-import HttpException from '../../../../utils/exceptions/http.exception';
-import { BaseController } from '../../abstract/baseController.abstract';
-import {
-    ISandboxDocument,
-    ISandboxService,
-} from '../../interface/sandbox.interface';
-import { sandboxService } from '../../service/sandbox.service';
+import { BaseGetController } from '../../abstract/baseController.abstract';
+import { Sandbox } from '../../interface/sandbox.interface';
+import { SandboxService, sandboxService } from '../../service/sandbox.service';
 
-export class SandboxGetByIdController extends BaseController<
-    ISandboxService,
-    Request,
-    ISandboxDocument
+export interface GetByIdParams {
+    id: string;
+}
+
+export class NewSandboxGetByIdController extends BaseGetController<
+    Sandbox,
+    GetByIdParams,
+    {}
 > {
-    constructor(sandboxService: ISandboxService) {
-        super(sandboxService);
-    }
-    protected successCode(): number {
-        return 200;
-    }
-    protected successMessage(): string {
-        return 'The sandbox entry has been fetched';
-    }
-    protected parseQueryParams(parseArgs: Request): Request {
-        return parseArgs;
-    }
-    protected async processData(
-        parsedData: Request
-    ): Promise<ISandboxDocument> {
-        const result = await sandboxService.getSandboxEntriesById(parsedData);
-        return result;
+    private readonly sandboxService: SandboxService;
+
+    constructor(sandboxService: SandboxService) {
+        super();
+
+        this.sandboxService = sandboxService;
     }
 
-    protected Error(error: any, next: NextFunction): void {
-        next(new HttpException(500, error.message));
+    protected authoriseUser(): void {}
+
+    protected async retrieveData(): Promise<Sandbox> {
+        return this.sandboxService.getSandboxEntriesById(
+            this.parseUrlParams().id
+        );
+    }
+
+    protected successMessage(): string {
+        return 'Successfully retrieved ';
     }
 }
 
-export const sandboxGetByIdController = new SandboxGetByIdController(
+export const newSandboxGetByIdController = new NewSandboxGetByIdController(
     sandboxService
-);
+).controller;

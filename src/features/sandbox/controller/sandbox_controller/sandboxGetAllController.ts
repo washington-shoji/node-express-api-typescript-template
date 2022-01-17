@@ -1,6 +1,6 @@
 import { BaseGetController } from '../../abstract/baseController.abstract';
 
-import { ISandboxDocument, Sandbox } from '../../interface/sandbox.interface';
+import { Sandbox } from '../../interface/sandbox.interface';
 import { SandboxService, sandboxService } from '../../service/sandbox.service';
 
 export class NewSandboxGetAllController extends BaseGetController<
