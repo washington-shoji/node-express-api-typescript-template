@@ -1,42 +1,33 @@
-import { Request, NextFunction } from 'express';
-import HttpException from '../../../../utils/exceptions/http.exception';
-import { BaseController } from '../../abstract/baseController.abstract';
-import {
-    ISandboxDocument,
-    ISandboxService,
-} from '../../interface/sandbox.interface';
-import { sandboxService } from '../../service/sandbox.service';
+import { BaseGetController } from '../../abstract/baseController.abstract';
 
-export class SandboxGetAllController extends BaseController<
-    ISandboxService,
-    Request,
-    ISandboxDocument[]
+import { ISandboxDocument, Sandbox } from '../../interface/sandbox.interface';
+import { SandboxService, sandboxService } from '../../service/sandbox.service';
+
+export class NewSandboxGetAllController extends BaseGetController<
+    Sandbox[],
+    {},
+    {}
 > {
-    constructor(sandboxService: ISandboxService) {
-        super(sandboxService);
-    }
-    protected successCode(): number {
-        return 200;
-    }
-    protected successMessage(): string {
-        return 'The sandbox entries has been fetched';
-    }
-    protected parseQueryParams(parseArgs: Request): Request {
-        return parseArgs;
-    }
-    protected async processData(
-        parsedData: Request
-    ): Promise<ISandboxDocument[]> {
-        const result = await sandboxService.getSandboxEntries(parsedData);
+    private readonly sandboxService: SandboxService;
 
+    public constructor(sandboxService: SandboxService) {
+        super();
+
+        this.sandboxService = sandboxService;
+    }
+
+    protected async retrieveData(): Promise<Sandbox[]> {
+        const result: Sandbox[] = await sandboxService.getSandboxEntries();
         return result;
     }
 
-    protected Error(error: any, next: NextFunction): void {
-        next(new HttpException(500, error.message));
+    protected successMessage(): string {
+        return 'Successfully retrieved sandboxes';
     }
+
+    protected async authoriseUser(): Promise<void> {}
 }
 
-export const sandboxGetAllController = new SandboxGetAllController(
+export const newSandboxGetAllController = new NewSandboxGetAllController(
     sandboxService
-);
+).controller;

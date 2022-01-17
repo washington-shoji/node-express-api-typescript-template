@@ -10,7 +10,7 @@ export abstract class NewBaseController {
     }
 }
 
-export abstract class BaseController<T, U, W> extends NewBaseController {
+export abstract class BaseGetController<T, U, W> extends NewBaseController {
     protected request: Request | undefined;
 
     protected constructor() {
